@@ -1,21 +1,30 @@
-"""Сохранение и загрузка JSON."""
+"""Загрузка и сохранение данных проекта в JSON."""
 
 import json
+from pathlib import Path
 
 
-def load_episodes(filename: str) -> list[dict]:
-    """Загрузить выпуски."""
+def load_json(filename: str) -> list[dict]:
+    """Загрузить список словарей из JSON-файла."""
+    path = Path(filename)
+
     try:
-        with open(filename, "r", encoding="utf-8") as file:
+        with path.open("r", encoding="utf-8") as file:
             data = json.load(file)
-            if not isinstance(data, list):
-                raise ValueError("Некорректный формат данных")
-            return data
-    except (FileNotFoundError, json.JSONDecodeError, ValueError):
+    except FileNotFoundError:
+        return []
+    except json.JSONDecodeError:
         return []
 
+    if not isinstance(data, list):
+        raise ValueError("JSON-файл должен содержать список")
+    return data
 
-def save_episodes(filename: str, episodes: list[dict]) -> None:
-    """Сохранить выпуски."""
-    with open(filename, "w", encoding="utf-8") as file:
-        json.dump(episodes, file, ensure_ascii=False, indent=2)
+
+def save_json(filename: str, data: list[dict]) -> None:
+    """Сохранить список словарей в JSON-файл."""
+    path = Path(filename)
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    with path.open("w", encoding="utf-8") as file:
+        json.dump(data, file, ensure_ascii=False, indent=2)
