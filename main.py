@@ -12,13 +12,12 @@ from episodes import (
 )
 from podcasts import (
     add_podcast,
-    find_podcasts,
     podcast_exists,
     sort_podcasts_by_title,
 )
 from storage import load_json, save_json
-from topics import add_topic, find_topics, topic_exists
-from utils import describe_object, input_date, input_int, input_status
+from topics import add_topic, topic_exists
+from utils import input_date, input_int, input_status
 
 PODCASTS_FILE = "data/podcasts.json"
 EPISODES_FILE = "data/episodes.json"
@@ -95,7 +94,7 @@ def main() -> None:
         print("10. Фильтр по статусу")
         print("11. Сортировка по дате")
         print("12. Статистика")
-        print("13. Интроспекция данных")
+        # print("13. Интроспекция данных")
         print("0. Выход")
 
         choice = input("Выберите действие: ").strip()
@@ -181,12 +180,12 @@ def main() -> None:
             for status, count in get_statistics(episodes).items():
                 print(f"{status}: {count}")
 
-        elif choice == "13":
-            info = describe_object(episodes)
-            print("Тип:", info["type"])
-            print("Класс:", info["class"])
-            print("Поддерживает итерацию:", info["has_iter"])
-            print("Публичные атрибуты:", info["public_attributes"])
+        # elif choice == "13":
+        #     info = describe_object(episodes)
+        #     print("Тип:", info["type"])
+        #     print("Класс:", info["class"])
+        #     print("Поддерживает итерацию:", info["has_iter"])
+        #     print("Публичные атрибуты:", info["public_attributes"])
 
         elif choice == "0":
             save_all(podcasts, episodes, topics)

@@ -36,13 +36,13 @@ def input_status(prompt: str) -> str:
         print("Некорректный статус. Попробуйте еще раз.")
 
 
-def describe_object(value: object) -> dict[str, object]:
-    """Вернуть сведения об объекте средствами интроспекции."""
-    return {
-        "type": type(value).__name__,
-        "class": value.__class__.__name__,
-        "has_iter": hasattr(value, "__iter__"),
-        "public_attributes": [
-            name for name in dir(value) if not name.startswith("_")
-        ],
-    }
+# def describe_object(value: object) -> dict[str, object]:
+#     """Вернуть сведения об объекте средствами интроспекции."""
+#     return {
+#         "type": type(value).__name__,
+#         "class": value.__class__.__name__,
+#         "has_iter": hasattr(value, "__iter__"),
+#         "public_attributes": [
+#             name for name in dir(value) if not name.startswith("_")
+#         ],
+#     }
