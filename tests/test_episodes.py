@@ -1,67 +1,62 @@
-"""Тесты функций работы с выпусками."""
-
-from episodes import (
+from models import ReleaseStatus, Topic
+from models.episodes import (
     add_episode,
-    delete_episode,
     filter_by_status,
-    find_episodes,
-    get_statistics,
-    sort_by_release_date,
-    update_status,
 )
+from models.podcasts import Podcast
+from models.users import Author, hash_password
 
 
-def test_add_episode():
+def make_objects():
+    author = Author(2, "Author", "author", hash_password("x"))
+    podcast = Podcast(1, "Podcast", "Description", author)
+    topic = Topic(1, "Python")
+    return author, podcast, topic
+
+
+def test_episode_creation_and_links():
+    author, podcast, topic = make_objects()
     episodes = []
     episode = add_episode(
         episodes,
-        1,
-        "Первый выпуск",
-        1,
-        "planned",
+        podcast,
+        "Episode",
+        topic,
+        author,
+        ReleaseStatus.PLANNED,
         "2026-10-01",
     )
-    assert episode["id"] == 1
-    assert len(episodes) == 1
+    assert episode.podcast is podcast
+    assert episode.topic is topic
+    assert episode.author is author
 
 
-def test_find_episodes():
+def test_change_status():
+    author, podcast, topic = make_objects()
     episodes = []
-    add_episode(episodes, 1, "Про Python", 1, "planned", "2026-10-01")
-    assert len(find_episodes(episodes, "python")) == 1
+    episode = add_episode(
+        episodes,
+        podcast,
+        "Episode",
+        topic,
+        author,
+        ReleaseStatus.PLANNED,
+        "2026-10-01",
+    )
+    episode.change_status(ReleaseStatus.PUBLISHED)
+    assert episode.is_published
 
 
 def test_filter_by_status():
+    author, podcast, topic = make_objects()
     episodes = []
-    add_episode(episodes, 1, "A", 1, "ready", "2026-10-01")
-    add_episode(episodes, 1, "B", 1, "planned", "2026-10-02")
-    assert len(filter_by_status(episodes, "ready")) == 1
-
-
-def test_sort_by_release_date():
-    episodes = []
-    add_episode(episodes, 1, "Позже", 1, "planned", "2026-10-20")
-    add_episode(episodes, 1, "Раньше", 1, "planned", "2026-10-01")
-    result = sort_by_release_date(episodes)
-    assert result[0]["title"] == "Раньше"
-
-
-def test_update_status():
-    episodes = []
-    add_episode(episodes, 1, "A", 1, "planned", "2026-10-01")
-    assert update_status(episodes, 1, "ready")
-    assert episodes[0]["status"] == "ready"
-
-
-def test_delete_episode():
-    episodes = []
-    add_episode(episodes, 1, "A", 1, "planned", "2026-10-01")
-    assert delete_episode(episodes, 1)
-    assert episodes == []
-
-
-def test_statistics():
-    episodes = []
-    add_episode(episodes, 1, "A", 1, "ready", "2026-10-01")
-    add_episode(episodes, 1, "B", 1, "ready", "2026-10-02")
-    assert get_statistics(episodes)["ready"] == 2
+    add_episode(
+        episodes,
+        podcast,
+        "Episode",
+        topic,
+        author,
+        ReleaseStatus.READY,
+        "2026-10-01",
+    )
+    assert len(filter_by_status(episodes, ReleaseStatus.READY)) == 1

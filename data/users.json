@@ -1,0 +1,51 @@
+[
+  {
+    "id": 1,
+    "name": "Администратор системы",
+    "login": "admin",
+    "password_hash": "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9",
+    "role": "admin"
+  },
+  {
+    "id": 2,
+    "name": "Анна Смирнова",
+    "login": "anna",
+    "password_hash": "7f92063f461ca1991c0f734dca11d2c98d30e14f08c0e5a7f8e631eca3bc1b52",
+    "role": "author"
+  },
+  {
+    "id": 3,
+    "name": "Иван Петров",
+    "login": "ivan",
+    "password_hash": "6c84b1086e558a0b9dad7623979f6ddf9f337084f281d9b3a07273d04b425344",
+    "role": "author"
+  },
+  {
+    "id": 4,
+    "name": "Мария Волкова",
+    "login": "maria",
+    "password_hash": "626e3c805e77eeb472c42c6be607be2af7ac5c08fd7050f278e0330fe81abf57",
+    "role": "author"
+  },
+  {
+    "id": 5,
+    "name": "Алексей Орлов",
+    "login": "alex",
+    "password_hash": "d9508122cd143d69df229bf3624b7bcb2b8ac81ed210a0c926455ef119c12abd",
+    "role": "author"
+  },
+  {
+    "id": 6,
+    "name": "Елена Соколова",
+    "login": "elena",
+    "password_hash": "0a1cb0e3ad6162abccee7638f45b15a63f8acbbb86285ea487bf6248720f58cc",
+    "role": "author"
+  },
+  {
+    "id": 7,
+    "name": "Петренко Екатерина",
+    "login": "katya",
+    "password_hash": "ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f",
+    "role": "author"
+  }
+]

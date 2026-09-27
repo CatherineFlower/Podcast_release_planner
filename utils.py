@@ -1,12 +1,12 @@
-"""Вспомогательные функции пользовательского ввода."""
+"""Вспомогательные функции ввода."""
 
 from datetime import datetime
 
-from statuses import STATUS_ORDER, is_valid_status
+from models.statuses import ReleaseStatus
 
 
 def input_int(prompt: str) -> int:
-    """Запросить целое число с обработкой ошибки."""
+    """Запросить целое число."""
     while True:
         try:
             return int(input(prompt))
@@ -14,10 +14,25 @@ def input_int(prompt: str) -> int:
             print("Введите целое число.")
 
 
+def input_text(prompt: str) -> str:
+    """Запросить непустую строку, корректную для UTF-8."""
+    while True:
+        value = input(prompt).strip()
+        if not value:
+            print("Поле не должно быть пустым.")
+            continue
+        try:
+            value.encode("utf-8")
+        except UnicodeEncodeError:
+            print("Некорректные символы. Введите текст заново.")
+            continue
+        return value
+
+
 def input_date(prompt: str) -> str:
     """Запросить дату в формате ГГГГ-ММ-ДД."""
     while True:
-        value = input(prompt).strip()
+        value = input_text(prompt)
         try:
             datetime.strptime(value, "%Y-%m-%d")
             return value
@@ -25,24 +40,15 @@ def input_date(prompt: str) -> str:
             print("Используйте формат ГГГГ-ММ-ДД.")
 
 
-def input_status(prompt: str) -> str:
-    """Запросить допустимый статус выпуска."""
-    print("Доступные статусы:", ", ".join(STATUS_ORDER))
+def input_status(prompt: str) -> ReleaseStatus:
+    """Запросить допустимый статус."""
+    print("Доступные статусы:")
+    for status in ReleaseStatus:
+        print(f"- {status.value}: {status.title}")
 
     while True:
-        value = input(prompt).strip().lower()
-        if is_valid_status(value):
-            return value
-        print("Некорректный статус. Попробуйте еще раз.")
-
-
-# def describe_object(value: object) -> dict[str, object]:
-#     """Вернуть сведения об объекте средствами интроспекции."""
-#     return {
-#         "type": type(value).__name__,
-#         "class": value.__class__.__name__,
-#         "has_iter": hasattr(value, "__iter__"),
-#         "public_attributes": [
-#             name for name in dir(value) if not name.startswith("_")
-#         ],
-#     }
+        value = input_text(prompt).lower()
+        try:
+            return ReleaseStatus.from_value(value)
+        except ValueError:
+            print("Некорректный статус.")

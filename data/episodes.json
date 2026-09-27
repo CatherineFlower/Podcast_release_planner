@@ -2,17 +2,604 @@
   {
     "id": 1,
     "podcast_id": 1,
-    "title": "Как выбрать тему для первого подкаста",
+    "title": "Python без магии",
     "topic_id": 1,
-    "status": "planned",
-    "release_date": "2026-10-01"
+    "author_id": 2,
+    "status": "published",
+    "release_date": "2026-09-04"
   },
   {
     "id": 2,
     "podcast_id": 1,
-    "title": "Подготовка к записи",
+    "title": "Что происходит внутри Django",
     "topic_id": 2,
+    "author_id": 2,
+    "status": "published",
+    "release_date": "2026-10-07"
+  },
+  {
+    "id": 3,
+    "podcast_id": 1,
+    "title": "Как проектировать REST API",
+    "topic_id": 3,
+    "author_id": 2,
     "status": "ready",
+    "release_date": "2026-11-10"
+  },
+  {
+    "id": 4,
+    "podcast_id": 1,
+    "title": "Типизация в Python",
+    "topic_id": 1,
+    "author_id": 2,
+    "status": "planned",
+    "release_date": "2026-12-13"
+  },
+  {
+    "id": 5,
+    "podcast_id": 1,
+    "title": "Ошибки начинающих разработчиков",
+    "topic_id": 2,
+    "author_id": 2,
+    "status": "recording",
+    "release_date": "2027-01-16"
+  },
+  {
+    "id": 6,
+    "podcast_id": 1,
+    "title": "Работа с JSON",
+    "topic_id": 3,
+    "author_id": 2,
+    "status": "idea",
+    "release_date": "2027-02-19"
+  },
+  {
+    "id": 7,
+    "podcast_id": 1,
+    "title": "Тестирование без боли",
+    "topic_id": 1,
+    "author_id": 2,
+    "status": "published",
+    "release_date": "2026-09-22"
+  },
+  {
+    "id": 8,
+    "podcast_id": 1,
+    "title": "Путь запроса в веб-приложении",
+    "topic_id": 2,
+    "author_id": 2,
+    "status": "published",
+    "release_date": "2026-10-25"
+  },
+  {
+    "id": 9,
+    "podcast_id": 2,
+    "title": "REST API без боли",
+    "topic_id": 2,
+    "author_id": 3,
+    "status": "ready",
+    "release_date": "2026-11-03"
+  },
+  {
+    "id": 10,
+    "podcast_id": 2,
+    "title": "Слои backend-приложения",
+    "topic_id": 3,
+    "author_id": 3,
+    "status": "planned",
+    "release_date": "2026-12-06"
+  },
+  {
+    "id": 11,
+    "podcast_id": 2,
+    "title": "Как устроена авторизация",
+    "topic_id": 10,
+    "author_id": 3,
+    "status": "recording",
+    "release_date": "2027-01-09"
+  },
+  {
+    "id": 12,
+    "podcast_id": 2,
+    "title": "ORM на практике",
+    "topic_id": 2,
+    "author_id": 3,
+    "status": "idea",
+    "release_date": "2027-02-12"
+  },
+  {
+    "id": 13,
+    "podcast_id": 2,
+    "title": "Миграции базы данных",
+    "topic_id": 3,
+    "author_id": 3,
+    "status": "published",
+    "release_date": "2026-09-15"
+  },
+  {
+    "id": 14,
+    "podcast_id": 2,
+    "title": "Логи и мониторинг",
+    "topic_id": 10,
+    "author_id": 3,
+    "status": "published",
+    "release_date": "2026-10-18"
+  },
+  {
+    "id": 15,
+    "podcast_id": 2,
+    "title": "Тесты API",
+    "topic_id": 2,
+    "author_id": 3,
+    "status": "ready",
+    "release_date": "2026-11-21"
+  },
+  {
+    "id": 16,
+    "podcast_id": 2,
+    "title": "Очереди задач",
+    "topic_id": 3,
+    "author_id": 3,
+    "status": "planned",
+    "release_date": "2026-12-24"
+  },
+  {
+    "id": 17,
+    "podcast_id": 3,
+    "title": "Исследование перед дизайном",
+    "topic_id": 4,
+    "author_id": 4,
+    "status": "recording",
+    "release_date": "2027-01-02"
+  },
+  {
+    "id": 18,
+    "podcast_id": 3,
+    "title": "Прототипирование интерфейса",
+    "topic_id": 5,
+    "author_id": 4,
+    "status": "idea",
+    "release_date": "2027-02-05"
+  },
+  {
+    "id": 19,
+    "podcast_id": 3,
+    "title": "Дизайн-система продукта",
+    "topic_id": 13,
+    "author_id": 4,
+    "status": "published",
+    "release_date": "2026-09-08"
+  },
+  {
+    "id": 20,
+    "podcast_id": 3,
+    "title": "Ошибки UX",
+    "topic_id": 4,
+    "author_id": 4,
+    "status": "published",
+    "release_date": "2026-10-11"
+  },
+  {
+    "id": 21,
+    "podcast_id": 3,
+    "title": "Интервью с пользователями",
+    "topic_id": 5,
+    "author_id": 4,
+    "status": "ready",
+    "release_date": "2026-11-14"
+  },
+  {
+    "id": 22,
+    "podcast_id": 3,
+    "title": "Метрики интерфейса",
+    "topic_id": 13,
+    "author_id": 4,
+    "status": "planned",
+    "release_date": "2026-12-17"
+  },
+  {
+    "id": 23,
+    "podcast_id": 3,
+    "title": "Работа дизайнера с командой",
+    "topic_id": 4,
+    "author_id": 4,
+    "status": "recording",
+    "release_date": "2027-01-20"
+  },
+  {
+    "id": 24,
+    "podcast_id": 4,
+    "title": "Что такое датасет",
+    "topic_id": 6,
+    "author_id": 5,
+    "status": "idea",
+    "release_date": "2027-02-23"
+  },
+  {
+    "id": 25,
+    "podcast_id": 4,
+    "title": "Подготовка данных",
+    "topic_id": 7,
+    "author_id": 5,
+    "status": "published",
+    "release_date": "2026-09-01"
+  },
+  {
+    "id": 26,
+    "podcast_id": 4,
+    "title": "Линейная регрессия",
+    "topic_id": 6,
+    "author_id": 5,
+    "status": "published",
+    "release_date": "2026-10-04"
+  },
+  {
+    "id": 27,
+    "podcast_id": 4,
+    "title": "Классификация",
+    "topic_id": 7,
+    "author_id": 5,
+    "status": "ready",
+    "release_date": "2026-11-07"
+  },
+  {
+    "id": 28,
+    "podcast_id": 4,
+    "title": "Метрики модели",
+    "topic_id": 6,
+    "author_id": 5,
+    "status": "planned",
+    "release_date": "2026-12-10"
+  },
+  {
+    "id": 29,
+    "podcast_id": 4,
+    "title": "Переобучение",
+    "topic_id": 7,
+    "author_id": 5,
+    "status": "recording",
+    "release_date": "2027-01-13"
+  },
+  {
+    "id": 30,
+    "podcast_id": 4,
+    "title": "Интерпретация результатов",
+    "topic_id": 6,
+    "author_id": 5,
+    "status": "idea",
+    "release_date": "2027-02-16"
+  },
+  {
+    "id": 31,
+    "podcast_id": 5,
+    "title": "Docker с нуля",
+    "topic_id": 8,
+    "author_id": 3,
+    "status": "published",
+    "release_date": "2026-09-19"
+  },
+  {
+    "id": 32,
+    "podcast_id": 5,
+    "title": "CI/CD по шагам",
+    "topic_id": 9,
+    "author_id": 3,
+    "status": "published",
+    "release_date": "2026-10-22"
+  },
+  {
+    "id": 33,
+    "podcast_id": 5,
+    "title": "Контейнеризация приложения",
+    "topic_id": 15,
+    "author_id": 3,
+    "status": "ready",
+    "release_date": "2026-11-25"
+  },
+  {
+    "id": 34,
+    "podcast_id": 5,
+    "title": "Переменные окружения",
+    "topic_id": 8,
+    "author_id": 3,
+    "status": "planned",
+    "release_date": "2026-12-03"
+  },
+  {
+    "id": 35,
+    "podcast_id": 5,
+    "title": "Логи контейнеров",
+    "topic_id": 9,
+    "author_id": 3,
+    "status": "recording",
+    "release_date": "2027-01-06"
+  },
+  {
+    "id": 36,
+    "podcast_id": 5,
+    "title": "Деплой без паники",
+    "topic_id": 15,
+    "author_id": 3,
+    "status": "idea",
+    "release_date": "2027-02-09"
+  },
+  {
+    "id": 37,
+    "podcast_id": 5,
+    "title": "Мониторинг сервиса",
+    "topic_id": 8,
+    "author_id": 3,
+    "status": "published",
+    "release_date": "2026-09-12"
+  },
+  {
+    "id": 38,
+    "podcast_id": 6,
+    "title": "Как проводить ретро",
+    "topic_id": 13,
+    "author_id": 6,
+    "status": "published",
+    "release_date": "2026-10-15"
+  },
+  {
+    "id": 39,
+    "podcast_id": 6,
+    "title": "Планирование спринта",
+    "topic_id": 5,
+    "author_id": 6,
+    "status": "ready",
+    "release_date": "2026-11-18"
+  },
+  {
+    "id": 40,
+    "podcast_id": 6,
+    "title": "Коммуникации команды",
+    "topic_id": 14,
+    "author_id": 6,
+    "status": "planned",
+    "release_date": "2026-12-21"
+  },
+  {
+    "id": 41,
+    "podcast_id": 6,
+    "title": "Продуктовые гипотезы",
+    "topic_id": 13,
+    "author_id": 6,
+    "status": "recording",
+    "release_date": "2027-01-24"
+  },
+  {
+    "id": 42,
+    "podcast_id": 6,
+    "title": "Работа с требованиями",
+    "topic_id": 5,
+    "author_id": 6,
+    "status": "idea",
+    "release_date": "2027-02-02"
+  },
+  {
+    "id": 43,
+    "podcast_id": 6,
+    "title": "Приоритизация задач",
+    "topic_id": 14,
+    "author_id": 6,
+    "status": "published",
+    "release_date": "2026-09-05"
+  },
+  {
+    "id": 44,
+    "podcast_id": 7,
+    "title": "Монолит или микросервисы",
+    "topic_id": 10,
+    "author_id": 2,
+    "status": "published",
     "release_date": "2026-10-08"
+  },
+  {
+    "id": 45,
+    "podcast_id": 7,
+    "title": "Границы модулей",
+    "topic_id": 15,
+    "author_id": 2,
+    "status": "ready",
+    "release_date": "2026-11-11"
+  },
+  {
+    "id": 46,
+    "podcast_id": 7,
+    "title": "Архитектурные слои",
+    "topic_id": 10,
+    "author_id": 2,
+    "status": "planned",
+    "release_date": "2026-12-14"
+  },
+  {
+    "id": 47,
+    "podcast_id": 7,
+    "title": "Связность и зависимости",
+    "topic_id": 15,
+    "author_id": 2,
+    "status": "recording",
+    "release_date": "2027-01-17"
+  },
+  {
+    "id": 48,
+    "podcast_id": 7,
+    "title": "Кэширование",
+    "topic_id": 10,
+    "author_id": 2,
+    "status": "idea",
+    "release_date": "2027-02-20"
+  },
+  {
+    "id": 49,
+    "podcast_id": 7,
+    "title": "Масштабирование",
+    "topic_id": 15,
+    "author_id": 2,
+    "status": "published",
+    "release_date": "2026-09-23"
+  },
+  {
+    "id": 50,
+    "podcast_id": 8,
+    "title": "Навигация в мобильном приложении",
+    "topic_id": 12,
+    "author_id": 4,
+    "status": "published",
+    "release_date": "2026-10-01"
+  },
+  {
+    "id": 51,
+    "podcast_id": 8,
+    "title": "Работа с API на клиенте",
+    "topic_id": 3,
+    "author_id": 4,
+    "status": "ready",
+    "release_date": "2026-11-04"
+  },
+  {
+    "id": 52,
+    "podcast_id": 8,
+    "title": "Состояние интерфейса",
+    "topic_id": 12,
+    "author_id": 4,
+    "status": "planned",
+    "release_date": "2026-12-07"
+  },
+  {
+    "id": 53,
+    "podcast_id": 8,
+    "title": "Локальное хранение",
+    "topic_id": 3,
+    "author_id": 4,
+    "status": "recording",
+    "release_date": "2027-01-10"
+  },
+  {
+    "id": 54,
+    "podcast_id": 8,
+    "title": "Производительность UI",
+    "topic_id": 12,
+    "author_id": 4,
+    "status": "idea",
+    "release_date": "2027-02-13"
+  },
+  {
+    "id": 55,
+    "podcast_id": 8,
+    "title": "Релиз приложения",
+    "topic_id": 3,
+    "author_id": 4,
+    "status": "published",
+    "release_date": "2026-09-16"
+  },
+  {
+    "id": 56,
+    "podcast_id": 9,
+    "title": "Основы аутентификации",
+    "topic_id": 11,
+    "author_id": 5,
+    "status": "published",
+    "release_date": "2026-10-19"
+  },
+  {
+    "id": 57,
+    "podcast_id": 9,
+    "title": "Хеширование паролей",
+    "topic_id": 3,
+    "author_id": 5,
+    "status": "ready",
+    "release_date": "2026-11-22"
+  },
+  {
+    "id": 58,
+    "podcast_id": 9,
+    "title": "OWASP Top 10",
+    "topic_id": 11,
+    "author_id": 5,
+    "status": "planned",
+    "release_date": "2026-12-25"
+  },
+  {
+    "id": 59,
+    "podcast_id": 9,
+    "title": "Безопасность API",
+    "topic_id": 3,
+    "author_id": 5,
+    "status": "recording",
+    "release_date": "2027-01-03"
+  },
+  {
+    "id": 60,
+    "podcast_id": 9,
+    "title": "Секреты и токены",
+    "topic_id": 11,
+    "author_id": 5,
+    "status": "idea",
+    "release_date": "2027-02-06"
+  },
+  {
+    "id": 61,
+    "podcast_id": 9,
+    "title": "Проверка входных данных",
+    "topic_id": 3,
+    "author_id": 5,
+    "status": "published",
+    "release_date": "2026-09-09"
+  },
+  {
+    "id": 62,
+    "podcast_id": 10,
+    "title": "Как составить резюме",
+    "topic_id": 14,
+    "author_id": 6,
+    "status": "published",
+    "release_date": "2026-10-12"
+  },
+  {
+    "id": 63,
+    "podcast_id": 10,
+    "title": "Техническое собеседование",
+    "topic_id": 13,
+    "author_id": 6,
+    "status": "ready",
+    "release_date": "2026-11-15"
+  },
+  {
+    "id": 64,
+    "podcast_id": 10,
+    "title": "Портфолио разработчика",
+    "topic_id": 14,
+    "author_id": 6,
+    "status": "planned",
+    "release_date": "2026-12-18"
+  },
+  {
+    "id": 65,
+    "podcast_id": 10,
+    "title": "Рост от junior к middle",
+    "topic_id": 13,
+    "author_id": 6,
+    "status": "recording",
+    "release_date": "2027-01-21"
+  },
+  {
+    "id": 66,
+    "podcast_id": 10,
+    "title": "Как учиться системно",
+    "topic_id": 14,
+    "author_id": 6,
+    "status": "idea",
+    "release_date": "2027-02-24"
+  },
+  {
+    "id": 67,
+    "podcast_id": 10,
+    "title": "Коммуникация на работе",
+    "topic_id": 13,
+    "author_id": 6,
+    "status": "published",
+    "release_date": "2026-09-02"
   }
 ]

@@ -1,35 +1,17 @@
-"""Тесты функций работы с подкастами."""
-
-from podcasts import (
-    add_podcast,
-    find_podcasts,
-    podcast_exists,
-    sort_podcasts_by_title,
-)
+from models.podcasts import add_podcast, find_podcasts
+from models.users import Author, hash_password
 
 
 def test_add_podcast():
+    author = Author(2, "Author", "author", hash_password("x"))
     podcasts = []
-    podcast = add_podcast(podcasts, "Tech Talk", "О технологиях")
-    assert podcast["id"] == 1
-    assert len(podcasts) == 1
+    podcast = add_podcast(podcasts, "Test", "Description", author)
+    assert podcast.id == 1
+    assert podcast.author is author
 
 
 def test_find_podcasts():
+    author = Author(2, "Author", "author", hash_password("x"))
     podcasts = []
-    add_podcast(podcasts, "Python Talks", "О Python")
+    add_podcast(podcasts, "Python Talks", "Description", author)
     assert len(find_podcasts(podcasts, "python")) == 1
-
-
-def test_sort_podcasts_by_title():
-    podcasts = []
-    add_podcast(podcasts, "Z Podcast", "")
-    add_podcast(podcasts, "A Podcast", "")
-    result = sort_podcasts_by_title(podcasts)
-    assert result[0]["title"] == "A Podcast"
-
-
-def test_podcast_exists():
-    podcasts = []
-    add_podcast(podcasts, "Podcast", "")
-    assert podcast_exists(podcasts, 1)
