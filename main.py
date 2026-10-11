@@ -65,116 +65,41 @@ def show_items(items: list[object], empty_message: str) -> None:
         print("-" * 70)
 
 
-
-def _bar(value: int, maximum: int, width: int = 24) -> str:
-    """Построить текстовую полосу для статистики."""
-    if maximum <= 0:
-        return "░" * width
-    filled = round(value / maximum * width)
-    return "█" * filled + "░" * (width - filled)
-
-
 def show_admin_statistics(
     podcasts,
     topics,
     episodes,
 ) -> None:
-    """Показать расширенную статистику компании."""
+    """Показать общую статистику компании."""
     status_counts = Counter(item.status for item in episodes)
     author_counts = Counter(item.author.name for item in episodes)
     podcast_counts = Counter(item.podcast.title for item in episodes)
-    month_counts = Counter(
-        item.release_date[:7]
-        for item in episodes
-    )
 
-    print("\n" + "=" * 78)
-    print("СТАТИСТИКА ПЛАНИРОВЩИКА ПОДКАСТОВ")
-    print("=" * 78)
-    print(
-        f"Подкастов: {len(podcasts):>3}   "
-        f"Тем: {len(topics):>3}   "
-        f"Выпусков: {len(episodes):>3}"
-    )
+    print("\n=== Общая статистика компании ===")
+    print(f"Подкастов: {len(podcasts)}")
+    print(f"Тем: {len(topics)}")
+    print(f"Выпусков: {len(episodes)}")
 
-    print("\nВыпуски по статусам")
-    print("-" * 78)
-    max_status = max(status_counts.values(), default=1)
+    print("\nПо статусам:")
     for status in ReleaseStatus:
         count = status_counts.get(status, 0)
         percent = count / len(episodes) * 100 if episodes else 0
-        print(
-            f"{status.title:<24} "
-            f"{_bar(count, max_status, 20)} "
-            f"{count:>3}  {percent:>5.1f}%"
-        )
+        print(f"- {status.title}: {count} ({percent:.1f}%)")
 
-    print("\nАктивность по подкастам")
-    print("-" * 78)
-    max_podcast = max(podcast_counts.values(), default=1)
-    for number, (title, count) in enumerate(
-        podcast_counts.most_common(),
-        start=1,
-    ):
-        print(
-            f"{number:>2}. {title:<30.30} "
-            f"{_bar(count, max_podcast, 16)} {count:>3}"
-        )
+    print("\nТоп-5 подкастов по числу выпусков:")
+    for title, count in podcast_counts.most_common(5):
+        print(f"- {title}: {count}")
 
-    print("\nКалендарь выпусков по месяцам")
-    print("-" * 78)
-    max_month = max(month_counts.values(), default=1)
-    for month in sorted(month_counts):
-        count = month_counts[month]
-        print(
-            f"{month}  {_bar(count, max_month, 22)} {count:>3}"
-        )
+    print("\nТоп-5 авторов по числу выпусков:")
+    for name, count in author_counts.most_common(5):
+        print(f"- {name}: {count}")
 
     published = status_counts.get(ReleaseStatus.PUBLISHED, 0)
-    ready = status_counts.get(ReleaseStatus.READY, 0)
-    active = len(episodes) - published
-    published_percent = (
-        published / len(episodes) * 100 if episodes else 0
+    percent = published / len(episodes) * 100 if episodes else 0
+    print(
+        f"\nОпубликовано: {published} из {len(episodes)} "
+        f"({percent:.1f}%)"
     )
-
-    print("\nКлючевые показатели")
-    print("-" * 78)
-    print(f"Опубликовано выпусков:          {published}")
-    print(f"Готово к публикации:            {ready}")
-    print(f"В работе или запланировано:     {active}")
-    print(f"Доля опубликованных:            {published_percent:.1f}%")
-
-    print("\nАвторы")
-    print("-" * 78)
-    max_author = max(author_counts.values(), default=1)
-    for name, count in author_counts.most_common():
-        print(
-            f"{name:<28.28} "
-            f"{_bar(count, max_author, 18)} {count:>3}"
-        )
-
-    print("\nБлижайшие выпуски")
-    print("-" * 78)
-    upcoming = sorted(
-        [
-            item
-            for item in episodes
-            if item.status != ReleaseStatus.PUBLISHED
-        ],
-        key=lambda item: item.release_date,
-    )[:7]
-
-    if not upcoming:
-        print("Нет запланированных выпусков.")
-    else:
-        for item in upcoming:
-            print(
-                f"{item.release_date} | "
-                f"{item.podcast.title[:24]:<24} | "
-                f"{item.title[:32]}"
-            )
-
-    print("=" * 78)
 
 
 def show_author_statistics(
@@ -182,7 +107,7 @@ def show_author_statistics(
     podcasts,
     episodes,
 ) -> None:
-    """Показать красивую статистику только по данным автора."""
+    """Показать статистику только по данным автора."""
     own_podcasts = [
         item for item in podcasts if item.author.id == author.id
     ]
@@ -190,74 +115,24 @@ def show_author_statistics(
         item for item in episodes if item.author.id == author.id
     ]
     counts = Counter(item.status for item in own_episodes)
-    podcast_counts = Counter(
-        item.podcast.title for item in own_episodes
-    )
 
-    print("\n" + "=" * 72)
-    print(f"СТАТИСТИКА АВТОРА: {author.name}")
-    print("=" * 72)
-    print(
-        f"Подкастов: {len(own_podcasts)}   "
-        f"Выпусков: {len(own_episodes)}"
-    )
+    print(f"\n=== Статистика автора: {author.name} ===")
+    print(f"Моих подкастов: {len(own_podcasts)}")
+    print(f"Моих выпусков: {len(own_episodes)}")
 
-    print("\nМои выпуски по статусам")
-    print("-" * 72)
-    maximum = max(counts.values(), default=1)
+    print("\nПо статусам:")
     for status in ReleaseStatus:
-        count = counts.get(status, 0)
-        percent = (
-            count / len(own_episodes) * 100
-            if own_episodes
-            else 0
+        print(f"- {status.title}: {counts.get(status, 0)}")
+
+    print("\nПо подкастам:")
+    for podcast in sorted(own_podcasts, key=lambda item: item.id):
+        count = sum(
+            1
+            for episode in own_episodes
+            if episode.podcast.id == podcast.id
         )
-        print(
-            f"{status.title:<24} "
-            f"{_bar(count, maximum, 18)} "
-            f"{count:>3}  {percent:>5.1f}%"
-        )
+        print(f"- {podcast.title}: {count} выпусков")
 
-    print("\nАктивность по моим подкастам")
-    print("-" * 72)
-    max_podcast = max(podcast_counts.values(), default=1)
-    for title, count in podcast_counts.most_common():
-        print(
-            f"{title:<30.30} "
-            f"{_bar(count, max_podcast, 16)} {count:>3}"
-        )
-
-    published = counts.get(ReleaseStatus.PUBLISHED, 0)
-    ready = counts.get(ReleaseStatus.READY, 0)
-    not_published = len(own_episodes) - published
-
-    print("\nКлючевые показатели")
-    print("-" * 72)
-    print(f"Опубликовано:                   {published}")
-    print(f"Готово к публикации:           {ready}")
-    print(f"Еще не опубликовано:           {not_published}")
-
-    print("\nБлижайшие мои выпуски")
-    print("-" * 72)
-    upcoming = sorted(
-        [
-            item
-            for item in own_episodes
-            if item.status != ReleaseStatus.PUBLISHED
-        ],
-        key=lambda item: item.release_date,
-    )[:5]
-    if not upcoming:
-        print("Нет запланированных выпусков.")
-    else:
-        for item in upcoming:
-            print(
-                f"{item.release_date} | "
-                f"{item.podcast.title[:24]:<24} | "
-                f"{item.title[:28]}"
-            )
-
-    print("=" * 72)
 
 def choose_author(users: list[User]) -> Author | None:
     """Выбрать автора из базы сотрудников."""

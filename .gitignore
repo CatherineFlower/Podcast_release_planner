@@ -37,3 +37,6 @@ dist/
 # Temporary files
 *.log
 *.tmp.DS_Store
+
+#Demonstration
+DEMO_PR5.md
