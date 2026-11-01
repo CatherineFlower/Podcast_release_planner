@@ -1,27 +1,16 @@
 <article class="card app-card h-100 podcast-card">
     <div class="card-body d-flex flex-column">
         <div class="d-flex justify-content-between gap-2">
-            <h2 class="h5">
-                {{ podcast.title|default:"Без названия" }}
-            </h2>
-            <span class="badge text-bg-light">
-                #{{ podcast.id }}
-            </span>
+            <h2 class="h5">{{ podcast.title|default:"Без названия" }}</h2>
+            <span class="badge text-bg-light">#{{ podcast.id }}</span>
         </div>
-
-        <p class="text-muted">
-            {{ podcast.description|default:"Описание не указано" }}
-        </p>
-
-        <p class="mb-2">
-            <strong>Автор:</strong>
-            {{ podcast.author.name }}
-        </p>
-
-        <a
-            class="btn btn-primary mt-auto"
-            href="{% url 'podcasts_web:detail' podcast.id %}"
-        >
+        <p class="text-muted">{{ podcast.description }}</p>
+        <p class="mb-2"><strong>Автор:</strong> {{ podcast.author_name }}</p>
+        <span class="badge text-bg-secondary mb-3">
+            Выпусков: {{ podcast.episode_count }}
+        </span>
+        <a class="btn btn-primary mt-auto"
+           href="{% url 'podcasts_web:detail' podcast.id %}">
             Подробнее
         </a>
     </div>

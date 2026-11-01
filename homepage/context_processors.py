@@ -1,16 +1,13 @@
-"""Общий контекст для всех Django-шаблонов."""
-
-from models import Admin, Author
+"""Общий контекст авторизации для Django-шаблонов."""
 
 from .auth import get_current_user
 
 
 def current_user_context(request):
-    """Добавить текущего пользователя и его роль в контекст."""
     user = get_current_user(request)
-
+    role = user["role"] if user is not None else None
     return {
         "current_user": user,
-        "is_admin": isinstance(user, Admin),
-        "is_author": isinstance(user, Author),
+        "is_admin": role == "admin",
+        "is_author": role == "author",
     }

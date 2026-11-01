@@ -1,132 +1,128 @@
-# Podcast Planner — ПР6
+# Podcast Planner — ПР7: SQLite и SQL
 
-Система планирования выпусков подкастов на Python и Django.
+В ПР7 к проекту ПР1–ПР6 добавлен отдельный реляционный слой хранения данных.
+Django ORM не используется: веб-представления работают с SQLite напрямую через
+стандартный модуль `sqlite3`.
 
-В ПР6 веб-часть проекта переведена с формирования HTML-строк
-в Python на стандартную систему Django Templates.
+## База данных
 
-## Технологии
-
-- Python 3;
-- Django 5.2;
-- Django Template Language;
-- HTML5;
-- CSS3;
-- JavaScript;
-- Bootstrap 5;
-- JSON;
-- pytest;
-- flake8.
-
-## Что изменилось в ПР6
-
-В ПР5 HTML создавался непосредственно во view-функциях.
-В ПР6 используется схема:
+Файл предметной базы ПР7:
 
 ```text
-URL → view → context → Django template → HTML → браузер
+data/podcast_planner.sqlite
 ```
 
-Функция `page()` больше не используется веб-представлениями.
+Важно: корневой `db.sqlite3`, который Django может создать после `migrate`,
+используется только внутренними компонентами Django (в частности, сессиями).
+Предметные данные ПР7 хранятся именно в `data/podcast_planner.sqlite`.
 
-Реализованы:
+Таблицы:
 
-- `templates/base.html`;
-- `{% extends %}`;
-- `{% block %}`;
-- `{% include %}`;
-- передача данных через `context`;
-- `{% for %}` и `{% empty %}`;
-- `{% if %}`;
-- именованные URL;
-- пространства имён `app_name`;
-- ссылки через `{% url %}`;
-- фильтры `length` и `default`;
-- Django static files;
-- собственный CSS;
-- изображение;
-- JavaScript.
+- `users(id, name, login, password_hash, role)`;
+- `topics(id, name)`;
+- `podcasts(id, title, description, author_id)`;
+- `episodes(id, podcast_id, title, topic_id, author_id, status, release_date)`.
 
-## Шаблоны
+Первичные ключи: `id` каждой таблицы.
 
-Общие шаблоны:
+Внешние ключи:
+
+- `podcasts.author_id -> users.id`;
+- `episodes.podcast_id -> podcasts.id`;
+- `episodes.topic_id -> topics.id`;
+- `episodes.author_id -> users.id`.
+
+Проверка внешних ключей включается при каждом подключении:
+
+```python
+conn.execute("PRAGMA foreign_keys = ON")
+```
+
+## Файлы ПР7
 
 ```text
-templates/
-├── base.html
-├── includes/
-│   └── navigation.html
-└── errors/
-    ├── 403.html
-    └── 404.html
+db/
+├── database.py     # подключение SQLite + sqlite3.Row
+├── init_db.py      # выполнение schema.sql
+├── import_json.py  # перенос JSON -> SQLite
+└── repository.py   # SQL-функции веб-приложения
+
+sql/
+├── schema.sql      # CREATE TABLE, ключи, индексы
+└── queries.sql     # 16 проверочных SQL-запросов
 ```
 
-Шаблоны приложений:
+JSON-файлы ПР1–ПР6 сохранены как исходная реализация и источник импорта.
 
-```text
-homepage/templates/homepage/
-podcasts_web/templates/podcasts_web/
-episodes_web/templates/episodes_web/
-topics_web/templates/topics_web/
-authors_web/templates/authors_web/
+## Создание и заполнение базы
+
+Из корня проекта:
+
+```bash
+python -m db.init_db
+python -m db.import_json
 ```
 
-Повторяющиеся компоненты вынесены в include:
+Скрипт импорта можно повторить: перед импортом он очищает таблицы в порядке,
+обратном внешним ключам, а затем загружает `users -> topics -> podcasts -> episodes`.
 
-```text
-podcasts_web/includes/podcast_card.html
-episodes_web/includes/episode_status.html
+## SQL-запросы
+
+`sql/queries.sql` содержит 16 запросов, включая:
+
+- 2 выборки списков;
+- несколько `WHERE`;
+- несколько `JOIN`;
+- `COUNT()`;
+- `GROUP BY`;
+- `HAVING`;
+- `ORDER BY` и `LIMIT`;
+- поиск по `LIKE`.
+
+Проверить все демонстрационные запросы:
+
+```bash
+sqlite3 data/podcast_planner.sqlite < sql/queries.sql
 ```
 
-## Static
+## Параметризованные запросы
 
-```text
-homepage/static/homepage/
-├── css/
-│   └── style.css
-├── js/
-│   └── main.js
-└── img/
-    └── logo.png
+Пользовательские значения не вставляются в SQL через f-строки.
+Например, вход выполняется так:
+
+```python
+conn.execute(
+    "SELECT * FROM users WHERE login = ?",
+    (login,),
+)
 ```
 
-В `base.html` используется:
+Поиск выпусков передаёт строку, статус и даты отдельными параметрами `?`.
 
-```django
-{% load static %}
+## Django и SQLite
+
+В `db/database.py` установлено:
+
+```python
+conn.row_factory = sqlite3.Row
 ```
 
-CSS:
+Поэтому Django view может обращаться к результатам по именам столбцов, а
+шаблон — как к `episode.title`, `episode.podcast_title` и т. д.
 
-```django
-{% static 'homepage/css/style.css' %}
-```
+Пользовательские сценарии SQLite:
 
-JavaScript:
+- `/` — счётчики из SQL;
+- `/podcasts/` — список подкастов из SQLite;
+- `/podcasts/<id>/` — подкаст и связанные выпуски через SQL;
+- `/episodes/` — список, поиск, фильтр по статусу и диапазону дат;
+- `/episodes/<id>/` — JOIN-данные конкретного выпуска;
+- `/statistics/` — агрегаты `COUNT`, `GROUP BY`;
+- `/topics/` — темы SQLite;
+- `/authors/` — авторы SQLite.
 
-```django
-{% static 'homepage/js/main.js' %}
-```
-
-Изображение:
-
-```django
-{% static 'homepage/img/logo.png' %}
-```
-
-## Основные страницы
-
-```text
-/login/
-/                       главная
-/podcasts/              список подкастов
-/podcasts/<id>/         отдельный подкаст
-/episodes/              список выпусков
-/episodes/<id>/         отдельный выпуск
-/topics/                темы
-/authors/               авторы
-/statistics/            статистика
-```
+Добавление и изменение данных из веб-интерфейса также выполняются SQL-командами
+`INSERT`, `UPDATE`, `DELETE` с параметрами.
 
 ## Авторизация
 
@@ -146,48 +142,21 @@ alex / alex123
 elena / elena123
 ```
 
-Состояние входа хранится в Django Session до явного выхода.
-
-## Хранение данных
-
-Данные всё ещё хранятся в JSON:
-
-```text
-data/users.json
-data/podcasts.json
-data/topics.json
-data/episodes.json
-```
-
-Используются существующие Python-классы из `models/`.
-Django ORM в ПР6 не внедряется.
-
-HTML-формы, существовавшие в ПР5, сохранены, но Django Forms
-на этом этапе не используются.
-
 ## Проверка
 
 ```bash
 python manage.py check
-python manage.py runserver
 pytest -v
 flake8 . --extend-exclude=venv,.venv
-```
-
-Проверка статического изображения:
-
-```bash
-python manage.py findstatic homepage/img/logo.png
+python manage.py runserver
 ```
 
 ## Git
 
-Коммит ПР6:
-
 ```bash
 git add .
-git commit -m "PR6: add Django templates and static files"
+git commit -m "PR7: add SQLite database and SQL queries"
 git push
 ```
 
-Все коммиты этой работы должны начинаться с `PR6:`.
+Коммиты ПР7 должны начинаться с `PR7:`.

@@ -1,134 +1,24 @@
 {% extends "base.html" %}
-
-{% block title %}
-    {% if episode %}
-        {{ episode.title }} — Podcast Planner
-    {% else %}
-        Выпуск не найден — Podcast Planner
-    {% endif %}
-{% endblock %}
-
+{% block title %}{% if episode %}{{ episode.title }}{% else %}Выпуск не найден{% endif %}{% endblock %}
 {% block content %}
-    {% if episode %}
-        <a
-            href="{% url 'episodes_web:episodes' %}"
-            class="btn btn-sm btn-outline-secondary mb-3"
-        >
-            ← Все выпуски
-        </a>
-
-        <div class="card app-card">
-            <div class="card-body">
-                <p class="eyebrow">
-                    Выпуск #{{ episode.id }}
-                </p>
-
-                <div class="d-flex justify-content-between gap-3">
-                    <h1 class="h3">
-                        {{ episode.title }}
-                    </h1>
-                    <div>
-                        {% include "episodes_web/includes/episode_status.html" %}
-                    </div>
-                </div>
-
-                <hr>
-
-                <p>
-                    <strong>Подкаст:</strong>
-                    <a
-                        href="{% url 'podcasts_web:detail' episode.podcast.id %}"
-                    >
-                        {{ episode.podcast.title }}
-                    </a>
-                </p>
-
-                <p>
-                    <strong>Автор:</strong>
-                    {{ episode.author.name }}
-                </p>
-
-                <p>
-                    <strong>Тема:</strong>
-                    {{ episode.topic.name }}
-                </p>
-
-                <p class="mb-0">
-                    <strong>Дата:</strong>
-                    {{ episode.release_date }}
-                </p>
-            </div>
-        </div>
-
-        {% if is_admin %}
-            <div class="card app-card mt-4">
-                <div class="card-body">
-                    <h2 class="h5">
-                        Управление выпуском
-                    </h2>
-
-                    <form
-                        method="post"
-                        class="mb-3"
-                    >
-                        {% csrf_token %}
-                        <input
-                            type="hidden"
-                            name="action"
-                            value="status"
-                        >
-
-                        <div class="input-group">
-                            <select
-                                class="form-select"
-                                name="status"
-                            >
-                                {% for status in statuses %}
-                                    <option value="{{ status.value }}">
-                                        {{ status.title }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-
-                            <button
-                                class="btn btn-primary"
-                                type="submit"
-                            >
-                                Изменить статус
-                            </button>
-                        </div>
-                    </form>
-
-                    <form method="post">
-                        {% csrf_token %}
-                        <input
-                            type="hidden"
-                            name="action"
-                            value="delete"
-                        >
-                        <button
-                            class="btn btn-danger"
-                            type="submit"
-                        >
-                            Удалить выпуск
-                        </button>
-                    </form>
-                </div>
-            </div>
-        {% endif %}
-    {% else %}
-        <section class="error-page">
-            <div class="error-code">404</div>
-            <h1>Выпуск не найден</h1>
-            <p class="text-muted">
-                Выпуск с указанным идентификатором отсутствует.
-            </p>
-            <a
-                href="{% url 'episodes_web:episodes' %}"
-                class="btn btn-primary"
-            >
-                ← К списку выпусков
-            </a>
-        </section>
-    {% endif %}
+{% if episode %}
+<a href="{% url 'episodes_web:episodes' %}" class="btn btn-sm btn-outline-secondary mb-3">← Все выпуски</a>
+<div class="card app-card"><div class="card-body">
+    <p class="eyebrow">Выпуск #{{ episode.id }} · JOIN SQLite</p>
+    <div class="d-flex justify-content-between gap-3"><h1 class="h3">{{ episode.title }}</h1>
+    <div>{% include "episodes_web/includes/episode_status.html" %}</div></div><hr>
+    <p><strong>Подкаст:</strong> <a href="{% url 'podcasts_web:detail' episode.podcast_id %}">{{ episode.podcast_title }}</a></p>
+    <p><strong>Автор:</strong> {{ episode.author_name }}</p>
+    <p><strong>Тема:</strong> {{ episode.topic_name }}</p>
+    <p class="mb-0"><strong>Дата:</strong> {{ episode.release_date }}</p>
+</div></div>
+{% if is_admin %}<div class="card app-card mt-4"><div class="card-body"><h2 class="h5">Управление выпуском</h2>
+<form method="post" class="mb-3">{% csrf_token %}<input type="hidden" name="action" value="status">
+<div class="input-group"><select class="form-select" name="status">{% for status in statuses %}
+<option value="{{ status.value }}">{{ status.title }}</option>{% endfor %}</select>
+<button class="btn btn-primary" type="submit">Изменить статус</button></div></form>
+<form method="post">{% csrf_token %}<input type="hidden" name="action" value="delete">
+<button class="btn btn-danger" type="submit">Удалить выпуск</button></form></div></div>{% endif %}
+{% else %}<section class="error-page"><div class="error-code">404</div><h1>Выпуск не найден</h1>
+<a href="{% url 'episodes_web:episodes' %}" class="btn btn-primary">← К списку выпусков</a></section>{% endif %}
 {% endblock %}

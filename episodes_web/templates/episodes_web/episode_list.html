@@ -119,7 +119,7 @@
                 method="get"
                 class="row g-2"
             >
-                <div class="col-md-5">
+                <div class="col-md-2">
                     <input
                         class="form-control"
                         name="q"
@@ -151,6 +151,16 @@
                 </div>
 
                 <div class="col-md-2">
+                    <input class="form-control" type="date" name="date_from"
+                           value="{{ date_from|default:'' }}" title="Дата от">
+                </div>
+
+                <div class="col-md-2">
+                    <input class="form-control" type="date" name="date_to"
+                           value="{{ date_to|default:'' }}" title="Дата до">
+                </div>
+
+                <div class="col-md-2">
                     <select
                         class="form-select"
                         name="sort"
@@ -169,7 +179,7 @@
                     </select>
                 </div>
 
-                <div class="col-md-2">
+                <div class="col-md-1">
                     <button
                         class="btn btn-secondary w-100"
                         type="submit"
@@ -204,10 +214,10 @@
                                 </a>
                             </td>
                             <td>
-                                {{ episode.podcast.title }}
+                                {{ episode.podcast_title }}
                             </td>
                             <td>
-                                {{ episode.author.name }}
+                                {{ episode.author_name }}
                             </td>
                             <td>
                                 {{ episode.release_date }}
