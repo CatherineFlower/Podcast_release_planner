@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Авторы — Podcast Planner
+{% endblock %}
+
+{% block content %}
+    <div class="page-heading">
+        <div>
+            <p class="eyebrow">Команда</p>
+            <h1>Авторы компании</h1>
+            <p class="text-muted">
+                Всего авторов: {{ authors|length }}
+            </p>
+        </div>
+    </div>
+
+    {% if error %}
+        <div class="alert alert-warning">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="card app-card">
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Имя</th>
+                                <th>Логин</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for author in authors %}
+                                <tr>
+                                    <td>{{ author.id }}</td>
+                                    <td>{{ author.name }}</td>
+                                    <td>{{ author.login }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="3">
+                                        Авторы не найдены.
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card app-card">
+                <div class="card-body">
+                    <h2 class="h4">
+                        Добавить автора
+                    </h2>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <input
+                            class="form-control mb-2"
+                            name="name"
+                            placeholder="ФИО"
+                            required
+                        >
+                        <input
+                            class="form-control mb-2"
+                            name="login"
+                            placeholder="Логин"
+                            required
+                        >
+                        <input
+                            class="form-control mb-3"
+                            type="password"
+                            name="password"
+                            placeholder="Пароль"
+                            required
+                        >
+                        <button
+                            class="btn btn-primary"
+                            type="submit"
+                        >
+                            Добавить
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

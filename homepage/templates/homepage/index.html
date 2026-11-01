@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Главная — Podcast Planner
+{% endblock %}
+
+{% block content %}
+    <section class="hero-section">
+        <div>
+            <p class="eyebrow">
+                Система планирования выпусков
+            </p>
+            <h1>
+                Podcast Planner
+            </h1>
+            <p class="lead mb-4">
+                Подкасты, выпуски, темы, авторы и статистика
+                в едином веб-интерфейсе.
+            </p>
+
+            <div class="d-flex flex-wrap gap-2">
+                <a
+                    class="btn btn-light"
+                    href="{% url 'podcasts_web:podcasts' %}"
+                >
+                    Подкасты
+                </a>
+                <a
+                    class="btn btn-outline-light"
+                    href="{% url 'episodes_web:episodes' %}"
+                >
+                    Выпуски
+                </a>
+                <a
+                    class="btn btn-outline-light"
+                    href="{% url 'homepage:statistics' %}"
+                >
+                    Статистика
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <div class="row g-3 mt-1">
+        <div class="col-md-4">
+            <div class="card metric-card h-100">
+                <div class="card-body">
+                    <div class="metric-label">
+                        Подкасты
+                    </div>
+                    <div class="metric-value">
+                        {{ podcasts|length }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card metric-card h-100">
+                <div class="card-body">
+                    <div class="metric-label">
+                        Выпуски
+                    </div>
+                    <div class="metric-value">
+                        {{ episodes|length }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card metric-card h-100">
+                <div class="card-body">
+                    <div class="metric-label">
+                        Опубликовано
+                    </div>
+                    <div class="metric-value">
+                        {{ published_count }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if is_admin %}
+        <div class="alert alert-secondary mt-4">
+            В базе компании:
+            авторов — {{ authors_count }},
+            тем — {{ topics|length }}.
+        </div>
+    {% endif %}
+{% endblock %}

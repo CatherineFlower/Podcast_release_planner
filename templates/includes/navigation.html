@@ -1,0 +1,83 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow-sm">
+    <div class="container">
+        <a
+            class="navbar-brand d-flex align-items-center gap-2"
+            href="{% url 'homepage:index' %}"
+        >
+            <span class="brand-mark">PP</span>
+            Podcast Planner
+        </a>
+
+        {% if current_user %}
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#mainNavigation"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div
+                class="collapse navbar-collapse"
+                id="mainNavigation"
+            >
+                <div class="navbar-nav me-auto">
+                    <a
+                        class="nav-link"
+                        href="{% url 'homepage:index' %}"
+                    >
+                        Главная
+                    </a>
+                    <a
+                        class="nav-link"
+                        href="{% url 'podcasts_web:podcasts' %}"
+                    >
+                        Подкасты
+                    </a>
+                    <a
+                        class="nav-link"
+                        href="{% url 'episodes_web:episodes' %}"
+                    >
+                        Выпуски
+                    </a>
+                    <a
+                        class="nav-link"
+                        href="{% url 'homepage:statistics' %}"
+                    >
+                        Статистика
+                    </a>
+
+                    {% if is_admin %}
+                        <a
+                            class="nav-link"
+                            href="{% url 'topics_web:topics' %}"
+                        >
+                            Темы
+                        </a>
+                        <a
+                            class="nav-link"
+                            href="{% url 'authors_web:authors' %}"
+                        >
+                            Авторы
+                        </a>
+                    {% endif %}
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <span class="navbar-text text-light">
+                        {{ current_user.name }}
+                        ·
+                        {{ current_user.role }}
+                    </span>
+                    <a
+                        class="btn btn-sm btn-outline-light"
+                        href="{% url 'homepage:logout' %}"
+                    >
+                        Выйти
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</nav>

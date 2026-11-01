@@ -1,39 +1,142 @@
-# Система планирования выпусков подкастов — ПР5
+# Podcast Planner — ПР6
 
-Веб-версия полностью сохраняет функциональность консольного проекта
-ПР3 и переносит основные пользовательские сценарии в Django.
+Система планирования выпусков подкастов на Python и Django.
 
-## Роли и авторизация
+В ПР6 веб-часть проекта переведена с формирования HTML-строк
+в Python на стандартную систему Django Templates.
 
-### Администратор
+## Технологии
 
-Полный доступ:
-- просмотр и добавление подкастов;
-- просмотр и добавление тем;
-- просмотр и добавление выпусков;
-- поиск выпусков;
-- фильтрация по статусу;
-- сортировка по дате;
-- изменение статуса;
-- удаление выпуска;
-- просмотр общей статистики;
-- просмотр и добавление авторов.
+- Python 3;
+- Django 5.2;
+- Django Template Language;
+- HTML5;
+- CSS3;
+- JavaScript;
+- Bootstrap 5;
+- JSON;
+- pytest;
+- flake8.
 
-Аккаунт:
+## Что изменилось в ПР6
+
+В ПР5 HTML создавался непосредственно во view-функциях.
+В ПР6 используется схема:
+
+```text
+URL → view → context → Django template → HTML → браузер
+```
+
+Функция `page()` больше не используется веб-представлениями.
+
+Реализованы:
+
+- `templates/base.html`;
+- `{% extends %}`;
+- `{% block %}`;
+- `{% include %}`;
+- передача данных через `context`;
+- `{% for %}` и `{% empty %}`;
+- `{% if %}`;
+- именованные URL;
+- пространства имён `app_name`;
+- ссылки через `{% url %}`;
+- фильтры `length` и `default`;
+- Django static files;
+- собственный CSS;
+- изображение;
+- JavaScript.
+
+## Шаблоны
+
+Общие шаблоны:
+
+```text
+templates/
+├── base.html
+├── includes/
+│   └── navigation.html
+└── errors/
+    ├── 403.html
+    └── 404.html
+```
+
+Шаблоны приложений:
+
+```text
+homepage/templates/homepage/
+podcasts_web/templates/podcasts_web/
+episodes_web/templates/episodes_web/
+topics_web/templates/topics_web/
+authors_web/templates/authors_web/
+```
+
+Повторяющиеся компоненты вынесены в include:
+
+```text
+podcasts_web/includes/podcast_card.html
+episodes_web/includes/episode_status.html
+```
+
+## Static
+
+```text
+homepage/static/homepage/
+├── css/
+│   └── style.css
+├── js/
+│   └── main.js
+└── img/
+    └── logo.png
+```
+
+В `base.html` используется:
+
+```django
+{% load static %}
+```
+
+CSS:
+
+```django
+{% static 'homepage/css/style.css' %}
+```
+
+JavaScript:
+
+```django
+{% static 'homepage/js/main.js' %}
+```
+
+Изображение:
+
+```django
+{% static 'homepage/img/logo.png' %}
+```
+
+## Основные страницы
+
+```text
+/login/
+/                       главная
+/podcasts/              список подкастов
+/podcasts/<id>/         отдельный подкаст
+/episodes/              список выпусков
+/episodes/<id>/         отдельный выпуск
+/topics/                темы
+/authors/               авторы
+/statistics/            статистика
+```
+
+## Авторизация
+
+Администратор:
 
 ```text
 admin / admin123
 ```
 
-### Автор
-
-Доступ только на чтение своих данных:
-- свои подкасты;
-- свои выпуски;
-- опубликованные и неопубликованные выпуски через фильтр;
-- персональная статистика.
-
-Аккаунты:
+Авторы:
 
 ```text
 anna / anna123
@@ -43,145 +146,48 @@ alex / alex123
 elena / elena123
 ```
 
-## Сессии
+Состояние входа хранится в Django Session до явного выхода.
 
-После успешного входа ID пользователя сохраняется в Django Session.
+## Хранение данных
 
-Сессия настроена так, чтобы вход сохранялся и после закрытия браузера:
-
-```python
-SESSION_EXPIRE_AT_BROWSER_CLOSE = False
-SESSION_COOKIE_AGE = 60 * 60 * 24 * 30
-```
-
-Пользователь выходит только по ссылке `/logout/`.
-
-## Основные URL
+Данные всё ещё хранятся в JSON:
 
 ```text
-/login/
-/logout/
-/                       главная
-/podcasts/              подкасты
-/podcasts/<id>/         карточка подкаста
-/topics/                темы, только admin
-/episodes/              выпуски + поиск/фильтр/сортировка
-/episodes/<id>/         выпуск + управление для admin
-/statistics/            статистика по роли
-/authors/               авторы, только admin
+data/users.json
+data/podcasts.json
+data/topics.json
+data/episodes.json
 ```
 
-## Ошибки
+Используются существующие Python-классы из `models/`.
+Django ORM в ПР6 не внедряется.
 
-Общий обработчик:
-
-```python
-handler404 = "homepage.views.page_not_found"
-```
-
-Проверка красивой общей 404:
-
-1. В `podcast_planner/settings.py` временно поставить:
-   `DEBUG = False`.
-2. Открыть:
-   `http://127.0.0.1:8000/nonexistent/`.
-3. Появится оформленная страница 404 с кнопкой «Вернуться на главную».
-4. После проверки вернуть `DEBUG = True`.
-
-Проверка найденного маршрута с отсутствующим объектом:
-
-```text
-http://127.0.0.1:8000/podcasts/999/
-```
-
-Проверка конвертера URL:
-
-```text
-http://127.0.0.1:8000/podcasts/abc/
-```
-
-## Запуск
-
-```bash
-pip install -r requirements.txt
-python manage.py migrate
-python manage.py check
-python manage.py runserver
-```
-
-Открыть:
-
-```text
-http://127.0.0.1:8000/login/
-```
+HTML-формы, существовавшие в ПР5, сохранены, но Django Forms
+на этом этапе не используются.
 
 ## Проверка
 
 ```bash
+python manage.py check
+python manage.py runserver
 pytest -v
-flake8 .
+flake8 . --extend-exclude=venv,.venv
 ```
 
-## Что сохранено из ПР3
+Проверка статического изображения:
 
-- `main.py`;
-- пакет `models/`;
-- `storage.py`;
-- JSON-файлы;
-- pytest-тесты.
-
-На ПР5 Django ORM всё ещё не заменяет предметную модель:
-веб-представления загружают данные через существующие функции ПР3.
-
-Подробный сценарий защиты находится в `DEMO_PR5_FULL.md`.
-
-
-## Универсальная обработка 404
-
-В проекте есть единая красивая 404-страница для любого неизвестного URL.
-
-В самом конце корневого `urlpatterns` расположен catch-all маршрут:
-
-```python
-re_path(
-    r"^(?P<path>.*)$",
-    homepage_views.catch_all_404,
-    name="catch_all_404",
-)
+```bash
+python manage.py findstatic homepage/img/logo.png
 ```
 
-Он перехватывает любой адрес, который не совпал с предыдущими маршрутами,
-даже при `DEBUG = True`.
+## Git
 
-Например:
+Коммит ПР6:
 
-```text
-/nonexistent/
-/abc/
-/podcasts/abc/
-/anything/one/two/three/
+```bash
+git add .
+git commit -m "PR6: add Django templates and static files"
+git push
 ```
 
-Все эти URL показывают одну оформленную страницу 404 с кнопками
-«На главную» и «Назад».
-
-Если маршрут существует, но объекта нет, например:
-
-```text
-/podcasts/999/
-/episodes/999/
-```
-
-view-функция вызывает ту же общую функцию:
-
-```python
-not_found_response(request, "...")
-```
-
-Поэтому 404 имеет одинаковый дизайн во всех частях сайта.
-
-Стандартный Django-механизм тоже сохранён:
-
-```python
-handler404 = "homepage.views.page_not_found"
-```
+Все коммиты этой работы должны начинаться с `PR6:`.

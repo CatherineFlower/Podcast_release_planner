@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Статистика — Podcast Planner
+{% endblock %}
+
+{% block content %}
+    <div class="page-heading">
+        <div>
+            <p class="eyebrow">Аналитика</p>
+            <h1>
+                {% if personal %}
+                    Моя статистика
+                {% else %}
+                    Статистика компании
+                {% endif %}
+            </h1>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="card metric-card">
+                <div class="card-body">
+                    <div class="metric-label">
+                        Подкасты
+                    </div>
+                    <div class="metric-value">
+                        {{ podcasts|length }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card metric-card">
+                <div class="card-body">
+                    <div class="metric-label">
+                        Выпуски
+                    </div>
+                    <div class="metric-value">
+                        {{ episodes|length }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card app-card">
+                <div class="card-body">
+                    <h2 class="h4">Выпуски по статусам</h2>
+
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Статус</th>
+                                    <th>Количество</th>
+                                    <th>Доля</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in status_rows %}
+                                    <tr>
+                                        <td>{{ row.title }}</td>
+                                        <td>{{ row.count }}</td>
+                                        <td>{{ row.percent }}%</td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="3">
+                                            Данных нет.
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card app-card">
+                <div class="card-body">
+                    <h2 class="h4">
+                        Активность по подкастам
+                    </h2>
+
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Подкаст</th>
+                                    <th>Выпусков</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for title, count in podcast_rows %}
+                                    <tr>
+                                        <td>{{ title }}</td>
+                                        <td>{{ count }}</td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="2">
+                                            Данных нет.
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

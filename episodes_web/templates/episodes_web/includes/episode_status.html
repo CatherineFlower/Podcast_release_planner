@@ -1,0 +1,21 @@
+{% if episode.status.value == "published" %}
+    <span class="badge bg-success episode-status episode-status-published">
+        {{ episode.status.title }}
+    </span>
+{% elif episode.status.value == "ready" %}
+    <span class="badge bg-info text-dark episode-status">
+        {{ episode.status.title }}
+    </span>
+{% elif episode.status.value == "recording" %}
+    <span class="badge bg-warning text-dark episode-status">
+        {{ episode.status.title }}
+    </span>
+{% elif episode.status.value == "planned" %}
+    <span class="badge bg-primary episode-status">
+        {{ episode.status.title }}
+    </span>
+{% else %}
+    <span class="badge bg-secondary episode-status">
+        {{ episode.status.title }}
+    </span>
+{% endif %}

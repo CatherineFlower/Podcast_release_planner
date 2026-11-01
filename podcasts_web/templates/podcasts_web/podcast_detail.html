@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if podcast %}
+        {{ podcast.title }} — Podcast Planner
+    {% else %}
+        Подкаст не найден — Podcast Planner
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% if podcast %}
+        <a
+            href="{% url 'podcasts_web:podcasts' %}"
+            class="btn btn-sm btn-outline-secondary mb-3"
+        >
+            ← Все подкасты
+        </a>
+
+        <div class="card app-card mb-4">
+            <div class="card-body">
+                <p class="eyebrow">
+                    Подкаст #{{ podcast.id }}
+                </p>
+                <h1>
+                    {{ podcast.title|default:"Без названия" }}
+                </h1>
+                <p class="lead">
+                    {{ podcast.description|default:"Описание не указано" }}
+                </p>
+                <p class="mb-0">
+                    <strong>Автор:</strong>
+                    {{ podcast.author.name }}
+                </p>
+            </div>
+        </div>
+
+        <h2 class="h4">
+            Выпуски этого подкаста
+        </h2>
+
+        <div class="list-group shadow-sm">
+            {% for episode in podcast_episodes %}
+                <a
+                    href="{% url 'episodes_web:detail' episode.id %}"
+                    class="list-group-item list-group-item-action"
+                >
+                    <div class="d-flex justify-content-between gap-3">
+                        <strong>{{ episode.title }}</strong>
+                        <span>{{ episode.release_date }}</span>
+                    </div>
+                    <small class="text-muted">
+                        {{ episode.status.title }}
+                    </small>
+                </a>
+            {% empty %}
+                <div class="list-group-item">
+                    Выпусков пока нет.
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <section class="error-page">
+            <div class="error-code">404</div>
+            <h1>Подкаст не найден</h1>
+            <p class="text-muted">
+                Подкаст с указанным идентификатором отсутствует.
+            </p>
+            <a
+                href="{% url 'podcasts_web:podcasts' %}"
+                class="btn btn-primary"
+            >
+                ← К списку подкастов
+            </a>
+        </section>
+    {% endif %}
+{% endblock %}

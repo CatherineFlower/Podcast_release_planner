@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Вход — Podcast Planner
+{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center py-5">
+        <div class="col-md-6 col-lg-4">
+            <div class="card app-card shadow-sm">
+                <div class="card-body p-4">
+                    <h1 class="h3 mb-3">
+                        Вход в систему
+                    </h1>
+                    <p class="text-muted">
+                        Сессия сохраняется до явного выхода.
+                    </p>
+
+                    {% if error %}
+                        <div class="alert alert-danger">
+                            {{ error }}
+                        </div>
+                    {% endif %}
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Логин
+                            </label>
+                            <input
+                                class="form-control"
+                                name="login"
+                                required
+                            >
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Пароль
+                            </label>
+                            <input
+                                class="form-control"
+                                type="password"
+                                name="password"
+                                required
+                            >
+                        </div>
+
+                        <button
+                            class="btn btn-primary w-100"
+                            type="submit"
+                        >
+                            Войти
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

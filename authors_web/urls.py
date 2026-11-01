@@ -1,3 +1,5 @@
+"""Именованные маршруты авторов."""
+
 from django.urls import path
 
 from . import views

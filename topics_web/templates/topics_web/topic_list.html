@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Темы — Podcast Planner
+{% endblock %}
+
+{% block content %}
+    <div class="page-heading">
+        <div>
+            <p class="eyebrow">Справочник</p>
+            <h1>Темы выпусков</h1>
+            <p class="text-muted">
+                Всего тем: {{ topics|length }}
+            </p>
+        </div>
+    </div>
+
+    {% if error %}
+        <div class="alert alert-warning">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="list-group shadow-sm">
+                {% for topic in topics %}
+                    <div class="list-group-item">
+                        <strong>#{{ topic.id }}</strong>
+                        {{ topic.name }}
+                    </div>
+                {% empty %}
+                    <div class="list-group-item">
+                        Темы не найдены.
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card app-card">
+                <div class="card-body">
+                    <h2 class="h4">
+                        Добавить тему
+                    </h2>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <input
+                            class="form-control mb-3"
+                            name="name"
+                            placeholder="Название темы"
+                            required
+                        >
+                        <button
+                            class="btn btn-primary"
+                            type="submit"
+                        >
+                            Добавить
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

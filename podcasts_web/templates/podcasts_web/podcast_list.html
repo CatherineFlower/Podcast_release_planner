@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Подкасты — Podcast Planner
+{% endblock %}
+
+{% block content %}
+    <div class="page-heading">
+        <div>
+            <p class="eyebrow">Каталог</p>
+            <h1>Подкасты</h1>
+            <p class="text-muted mb-0">
+                Всего подкастов:
+                {{ podcasts|length }}
+            </p>
+        </div>
+    </div>
+
+    {% if is_admin %}
+        <div class="card app-card mb-4">
+            <div class="card-body">
+                <h2 class="h4">
+                    Добавить подкаст
+                </h2>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="row g-2">
+                        <div class="col-md-4">
+                            <input
+                                class="form-control"
+                                name="title"
+                                placeholder="Название"
+                                required
+                            >
+                        </div>
+
+                        <div class="col-md-4">
+                            <input
+                                class="form-control"
+                                name="description"
+                                placeholder="Описание"
+                                required
+                            >
+                        </div>
+
+                        <div class="col-md-3">
+                            <select
+                                class="form-select"
+                                name="author_id"
+                                required
+                            >
+                                {% for author in authors %}
+                                    <option value="{{ author.id }}">
+                                        {{ author.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-1">
+                            <button
+                                class="btn btn-primary w-100"
+                                type="submit"
+                            >
+                                +
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="row g-3">
+        {% for podcast in podcasts %}
+            <div class="col-md-6 col-lg-4">
+                {% include "podcasts_web/includes/podcast_card.html" %}
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    Подкасты не найдены.
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

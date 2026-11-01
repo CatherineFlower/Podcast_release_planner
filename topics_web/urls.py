@@ -1,3 +1,5 @@
+"""Именованные маршруты тем."""
+
 from django.urls import path
 
 from . import views

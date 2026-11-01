@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}
+    404 — страница не найдена
+{% endblock %}
+
+{% block content %}
+    <section class="error-page">
+        <div class="error-code">404</div>
+        <h1>Страница не найдена</h1>
+
+        <p class="text-muted">
+            {% if requested_path %}
+                Адрес
+                <code>{{ requested_path }}</code>
+                не существует.
+            {% else %}
+                Запрошенная страница или объект не найдены.
+            {% endif %}
+        </p>
+
+        <div class="d-flex gap-2 justify-content-center">
+            <a
+                href="{% url 'homepage:index' %}"
+                class="btn btn-primary"
+            >
+                ← На главную
+            </a>
+            <button
+                type="button"
+                class="btn btn-outline-secondary"
+                onclick="history.back()"
+            >
+                Назад
+            </button>
+        </div>
+    </section>
+{% endblock %}
