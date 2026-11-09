@@ -7,6 +7,6 @@
         <p class="text-muted">{{ podcast.description|default:"Описание не указано" }}</p>
         <p class="mb-2"><strong>Автор:</strong> {{ podcast.author.name }}</p>
         <p class="small text-muted">Выпусков: {{ podcast.episode_count }}</p>
-        <a class="btn btn-primary mt-auto" href="{% url 'podcasts_web:detail' podcast.id %}">Подробнее</a>
+        <a class="btn btn-primary mt-auto" href="{{ podcast.get_absolute_url }}">Подробнее</a>
     </div>
 </article>

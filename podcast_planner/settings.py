@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "debug_toolbar",
     "homepage.apps.HomepageConfig",
     "podcasts_web.apps.PodcastsWebConfig",
     "episodes_web.apps.EpisodesWebConfig",
@@ -29,6 +30,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -50,6 +52,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "homepage.context_processors.current_user_context",
+                "homepage.context_processors.project_context",
             ],
         },
     },
@@ -80,3 +83,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Выход выполняется только через /logout/.
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 30
+
+INTERNAL_IPS = ["127.0.0.1"]

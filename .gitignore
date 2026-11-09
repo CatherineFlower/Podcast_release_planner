@@ -40,3 +40,21 @@ dist/
 
 #Demonstration
 DEMO_PR5.md
+
+
+# Django local database
+db.sqlite3
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+
+# Pytest/cache
+.pytest_cache/
+
+# IDE
+.idea/

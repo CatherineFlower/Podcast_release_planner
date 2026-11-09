@@ -1,10 +1,40 @@
-"""Django ORM-модель выпуска подкаста."""
+"""Django ORM-модель выпуска подкаста и повторно используемые QuerySet ПР10."""
 
 from django.db import models
+from django.db.models import Q
 
 from authors_web.models import User
 from podcasts_web.models import Podcast
 from topics_web.models import Topic
+
+
+class EpisodeQuerySet(models.QuerySet):
+    """Повторно используемые условия выборки выпусков."""
+
+    def published(self):
+        return self.filter(status=Episode.Status.PUBLISHED)
+
+    def in_progress(self):
+        return self.exclude(status=Episode.Status.PUBLISHED)
+
+    def ready(self):
+        return self.filter(status=Episode.Status.READY)
+
+    def for_date(self, value):
+        return self.filter(release_date=value)
+
+    def by_author(self, user):
+        return self.filter(author=user)
+
+    def search(self, query):
+        if not query:
+            return self
+        return self.filter(
+            Q(title__icontains=query)
+            | Q(podcast__title__icontains=query)
+            | Q(topic__name__icontains=query)
+            | Q(author__name__icontains=query)
+        )
 
 
 class Episode(models.Model):
@@ -21,10 +51,7 @@ class Episode(models.Model):
         related_name="episodes",
         verbose_name="Подкаст",
     )
-    title = models.CharField(
-        max_length=250,
-        verbose_name="Название выпуска",
-    )
+    title = models.CharField(max_length=250, verbose_name="Название выпуска")
     topic = models.ForeignKey(
         Topic,
         on_delete=models.PROTECT,
@@ -44,9 +71,9 @@ class Episode(models.Model):
         default=Status.IDEA,
         verbose_name="Статус",
     )
-    release_date = models.DateField(
-        verbose_name="Дата выпуска",
-    )
+    release_date = models.DateField(verbose_name="Дата выпуска")
+
+    objects = EpisodeQuerySet.as_manager()
 
     @property
     def status_title(self) -> str:

@@ -1,7 +1,5 @@
 """Создание таблиц SQLite из sql/schema.sql."""
 
-from pathlib import Path
-
 from .database import BASE_DIR, DB_PATH, get_connection
 
 SCHEMA_FILE = BASE_DIR / "sql" / "schema.sql"

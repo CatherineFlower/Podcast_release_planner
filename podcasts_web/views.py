@@ -77,3 +77,23 @@ def podcast_detail(request, podcast_id):
             "podcast_episodes": podcast_episodes,
         },
     )
+
+
+@login_required
+def podcast_detail_by_slug(request, slug):
+    """Подробная страница по slug; используется get_absolute_url()."""
+    user = request.current_user
+    queryset = Podcast.objects.select_related("author").annotate(
+        episode_count=Count("episodes")
+    )
+    podcast = get_object_or_404(queryset, slug=slug)
+    if user.role == User.Role.AUTHOR and podcast.author_id != user.pk:
+        return forbidden_response(request)
+    podcast_episodes = podcast.episodes.select_related(
+        "topic", "author"
+    ).order_by("release_date", "pk")
+    return render(
+        request,
+        "podcasts_web/podcast_detail.html",
+        {"podcast": podcast, "podcast_episodes": podcast_episodes},
+    )

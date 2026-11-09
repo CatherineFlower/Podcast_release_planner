@@ -3,7 +3,7 @@
 from datetime import date
 
 from django.core.paginator import Paginator
-from django.db.models import Case, CharField, F, Q, Value, When
+from django.db.models import Case, CharField, F, Value, When
 from django.shortcuts import get_object_or_404, redirect, render
 
 from authors_web.models import User
@@ -95,13 +95,7 @@ def episodes(request):
     if user.role == User.Role.AUTHOR:
         queryset = queryset.filter(author=user)
 
-    if query:
-        queryset = queryset.filter(
-            Q(title__icontains=query)
-            | Q(podcast__title__icontains=query)
-            | Q(topic__name__icontains=query)
-            | Q(author__name__icontains=query)
-        )
+    queryset = queryset.search(query)
     if status in Episode.Status.values:
         queryset = queryset.filter(status=status)
     if date_from is not None:

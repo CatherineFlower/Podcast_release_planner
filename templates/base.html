@@ -37,8 +37,9 @@
             >
             <span>
                 © <span id="current-year"></span>
-                Podcast Planner
+                {{ site_name|default:"Podcast Planner" }}
             </span>
+            <span class="ms-auto small">Подкастов: {{ global_podcast_count }} · Выпусков: {{ global_episode_count }}</span>
         </div>
     </footer>
 

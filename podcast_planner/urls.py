@@ -6,6 +6,7 @@ from django.urls import include, path, re_path
 from homepage import views as homepage_views
 
 urlpatterns = [
+    path("__debug__/", include("debug_toolbar.urls")),
     path("admin/", admin.site.urls),
     path("", include("homepage.urls")),
     path("podcasts/", include("podcasts_web.urls")),

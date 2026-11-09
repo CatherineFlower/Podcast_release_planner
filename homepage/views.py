@@ -67,9 +67,7 @@ def index(request):
         "podcast_count": podcasts.count(),
         "episode_count": totals["episode_count"],
         "published_count": totals["published_count"],
-        "in_progress_count": episodes.exclude(
-            status=Episode.Status.PUBLISHED
-        ).count(),
+        "in_progress_count": episodes.in_progress().count(),
         "topic_count": Topic.objects.count(),
         "author_count": User.objects.filter(
             role=User.Role.AUTHOR
@@ -77,7 +75,7 @@ def index(request):
     }
 
     upcoming = (
-        episodes.select_related("podcast", "author")
+        episodes.in_progress().select_related("podcast", "author")
         .order_by("release_date", "pk")[:5]
     )
 
