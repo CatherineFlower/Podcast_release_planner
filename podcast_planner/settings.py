@@ -20,11 +20,11 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "homepage",
-    "podcasts_web",
-    "episodes_web",
-    "topics_web",
-    "authors_web",
+    "homepage.apps.HomepageConfig",
+    "podcasts_web.apps.PodcastsWebConfig",
+    "episodes_web.apps.EpisodesWebConfig",
+    "topics_web.apps.TopicsWebConfig",
+    "authors_web.apps.AuthorsWebConfig",
 ]
 
 MIDDLEWARE = [

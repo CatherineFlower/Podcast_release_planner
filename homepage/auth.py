@@ -1,10 +1,10 @@
-"""Авторизация через пользователей, перенесённых в SQLite."""
+"""Авторизация через Django ORM и собственную модель User."""
 
 from functools import wraps
 
 from django.shortcuts import redirect, render
 
-from db.repository import get_user_by_id
+from authors_web.models import User
 
 SESSION_USER_ID = "podcast_planner_user_id"
 
@@ -15,7 +15,10 @@ def get_current_user(request):
     user_id = request.session.get(SESSION_USER_ID)
     if user_id is None:
         return None
-    return get_user_by_id(user_id)
+    try:
+        return User.objects.get(pk=user_id)
+    except User.DoesNotExist:
+        return None
 
 
 def forbidden_response(request):
@@ -39,7 +42,7 @@ def admin_required(view_func):
         user = get_current_user(request)
         if user is None:
             return redirect("homepage:login")
-        if user["role"] != "admin":
+        if user.role != User.Role.ADMIN:
             return forbidden_response(request)
         request.current_user = user
         return view_func(request, *args, **kwargs)

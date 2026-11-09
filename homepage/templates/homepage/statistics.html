@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Статистика — Podcast Planner{% endblock %}
 {% block content %}
-<div class="page-heading"><div><p class="eyebrow">SQL · COUNT · GROUP BY</p><h1>{% if personal %}Моя статистика{% else %}Статистика компании{% endif %}</h1></div></div>
+<div class="page-heading"><div><p class="eyebrow">ORM · aggregate() · annotate()</p><h1>{% if personal %}Моя статистика{% else %}Статистика компании{% endif %}</h1></div></div>
 <div class="row g-3 mb-4">
 <div class="col-md-4"><div class="card metric-card"><div class="card-body"><div class="metric-label">Подкасты</div><div class="metric-value">{{ dashboard.podcast_count }}</div></div></div></div>
 <div class="col-md-4"><div class="card metric-card"><div class="card-body"><div class="metric-label">Выпуски</div><div class="metric-value">{{ dashboard.episode_count }}</div></div></div></div>

@@ -1,140 +1,97 @@
-# Podcast Planner — ПР7: SQLite и SQL
+# Podcast Planner — ПР9
 
-В ПР7 к проекту ПР1–ПР6 добавлен отдельный реляционный слой хранения данных.
-Django ORM не используется: веб-представления работают с SQLite напрямую через
-стандартный модуль `sqlite3`.
+ПР9 переводит слой доступа к данным проекта с ручного SQL/sqlite3 на Django ORM.
+Веб-интерфейс, шаблоны, авторизация и пользовательские сценарии предыдущих работ сохранены.
 
-## База данных
+## ORM-модели
 
-Файл предметной базы ПР7:
+- `authors_web.models.User` — пользователь компании (`admin` / `author`);
+- `topics_web.models.Topic` — тема выпуска;
+- `podcasts_web.models.Podcast` — подкаст, `ForeignKey` на автора;
+- `episodes_web.models.Episode` — выпуск, `ForeignKey` на подкаст, тему и автора.
 
-```text
-data/podcast_planner.sqlite
-```
+Для внешних ключей используется `on_delete=models.PROTECT`, чтобы связанные данные не удалялись случайно. Обратные связи задаются через `related_name`.
 
-Важно: корневой `db.sqlite3`, который Django может создать после `migrate`,
-используется только внутренними компонентами Django (в частности, сессиями).
-Предметные данные ПР7 хранятся именно в `data/podcast_planner.sqlite`.
+## Две базы в ПР9
 
-Таблицы:
+- `data/podcast_planner.sqlite` — исходная база ПР7, хранится как источник переноса;
+- `db.sqlite3` — целевая база Django ORM, локальная и исключена из Git.
 
-- `users(id, name, login, password_hash, role)`;
-- `topics(id, name)`;
-- `podcasts(id, title, description, author_id)`;
-- `episodes(id, podcast_id, title, topic_id, author_id, status, release_date)`.
+SQL-слой ПР7 (`sql/`, `db/repository.py`) сохранён как предыдущая реализация, но Django views ПР9 его не используют.
 
-Первичные ключи: `id` каждой таблицы.
-
-Внешние ключи:
-
-- `podcasts.author_id -> users.id`;
-- `episodes.podcast_id -> podcasts.id`;
-- `episodes.topic_id -> topics.id`;
-- `episodes.author_id -> users.id`.
-
-Проверка внешних ключей включается при каждом подключении:
-
-```python
-conn.execute("PRAGMA foreign_keys = ON")
-```
-
-## Файлы ПР7
-
-```text
-db/
-├── database.py     # подключение SQLite + sqlite3.Row
-├── init_db.py      # выполнение schema.sql
-├── import_json.py  # перенос JSON -> SQLite
-└── repository.py   # SQL-функции веб-приложения
-
-sql/
-├── schema.sql      # CREATE TABLE, ключи, индексы
-└── queries.sql     # 16 проверочных SQL-запросов
-```
-
-JSON-файлы ПР1–ПР6 сохранены как исходная реализация и источник импорта.
-
-## Создание и заполнение базы
-
-Из корня проекта:
+## Первый запуск ПР9
 
 ```bash
-python -m db.init_db
-python -m db.import_json
+pip install -r requirements.txt
+python manage.py check
+python manage.py makemigrations
+python manage.py migrate
+python db/inspect_source_db.py
+python db/import_sqlite_to_orm.py
+python manage.py showmigrations
+python manage.py runserver
 ```
 
-Скрипт импорта можно повторить: перед импортом он очищает таблицы в порядке,
-обратном внешним ключам, а затем загружает `users -> topics -> podcasts -> episodes`.
+Импорт можно запускать повторно: используется `update_or_create()` с сохранением исходных ID.
 
-## SQL-запросы
-
-`sql/queries.sql` содержит 16 запросов, включая:
-
-- 2 выборки списков;
-- несколько `WHERE`;
-- несколько `JOIN`;
-- `COUNT()`;
-- `GROUP BY`;
-- `HAVING`;
-- `ORDER BY` и `LIMIT`;
-- поиск по `LIKE`.
-
-Проверить все демонстрационные запросы:
+## Проверка данных в Django shell
 
 ```bash
-sqlite3 data/podcast_planner.sqlite < sql/queries.sql
+python manage.py shell
 ```
-
-## Параметризованные запросы
-
-Пользовательские значения не вставляются в SQL через f-строки.
-Например, вход выполняется так:
 
 ```python
-conn.execute(
-    "SELECT * FROM users WHERE login = ?",
-    (login,),
-)
+from authors_web.models import User
+from topics_web.models import Topic
+from podcasts_web.models import Podcast
+from episodes_web.models import Episode
+
+User.objects.count()
+Topic.objects.count()
+Podcast.objects.count()
+Episode.objects.count()
+Episode.objects.select_related("podcast", "topic", "author").first()
 ```
 
-Поиск выпусков передаёт строку, статус и даты отдельными параметрами `?`.
+Ожидаемое количество после импорта исходной базы ПР7:
 
-## Django и SQLite
-
-В `db/database.py` установлено:
-
-```python
-conn.row_factory = sqlite3.Row
+```text
+users: 6
+topics: 15
+podcasts: 10
+episodes: 67
 ```
 
-Поэтому Django view может обращаться к результатам по именам столбцов, а
-шаблон — как к `episode.title`, `episode.podcast_title` и т. д.
+## Реализованные возможности ORM
 
-Пользовательские сценарии SQLite:
+- `all()`, `filter()`, `exclude()`, `get()`, `create()`;
+- фильтрация по связанным полям;
+- `Q()` для поиска по нескольким полям;
+- `order_by()` с allow-list допустимых вариантов;
+- `select_related()`;
+- обратные связи `related_name`;
+- `F()`, `values()`, `annotate()`, `aggregate()`, `Count()`;
+- `get_object_or_404()`;
+- срез QuerySet;
+- `Paginator`;
+- сохранение GET-параметров при переключении страниц.
 
-- `/` — счётчики из SQL;
-- `/podcasts/` — список подкастов из SQLite;
-- `/podcasts/<id>/` — подкаст и связанные выпуски через SQL;
-- `/episodes/` — список, поиск, фильтр по статусу и диапазону дат;
-- `/episodes/<id>/` — JOIN-данные конкретного выпуска;
-- `/statistics/` — агрегаты `COUNT`, `GROUP BY`;
-- `/topics/` — темы SQLite;
-- `/authors/` — авторы SQLite.
+Подробный список расположен в `ORM_QUERIES_PR9.md`.
 
-Добавление и изменение данных из веб-интерфейса также выполняются SQL-командами
-`INSERT`, `UPDATE`, `DELETE` с параметрами.
+## Страницы
+
+- `/` — ORM-дашборд;
+- `/podcasts/` — список и создание подкастов через ORM;
+- `/podcasts/<id>/` — подкаст и обратная связь `podcast.episodes`;
+- `/episodes/` — поиск, фильтры, сортировка, `values/annotate`, пагинация;
+- `/episodes/<id>/` — `select_related()` и `get_object_or_404()`;
+- `/statistics/` — `aggregate()` и `annotate()`;
+- `/topics/`, `/authors/` — CRUD через ORM.
 
 ## Авторизация
 
-Администратор:
-
 ```text
 admin / admin123
-```
-
-Авторы:
-
-```text
 anna / anna123
 ivan / ivan123
 maria / maria123
@@ -142,21 +99,21 @@ alex / alex123
 elena / elena123
 ```
 
-## Проверка
+## Проверки
 
 ```bash
 python manage.py check
+python manage.py showmigrations
 pytest -v
 flake8 . --extend-exclude=venv,.venv
-python manage.py runserver
 ```
 
-## Git
+## Git ПР9
+
+Все коммиты ПР9 начинаются с `PR9:`.
 
 ```bash
 git add .
-git commit -m "PR7: add SQLite database and SQL queries"
-git push
+git commit -m "PR9: migrate data layer to Django ORM"
+git push origin master
 ```
-
-Коммиты ПР7 должны начинаться с `PR7:`.

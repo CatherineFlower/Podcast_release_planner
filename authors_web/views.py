@@ -1,10 +1,11 @@
-"""Авторы из SQLite."""
+"""Авторы компании через Django ORM."""
 
+from django.db import IntegrityError
 from django.shortcuts import redirect, render
 
-from db.repository import add_author, get_authors
 from homepage.auth import admin_required
-from models.users import hash_password
+
+from .models import User, hash_password
 
 
 @admin_required
@@ -16,13 +17,28 @@ def authors(request):
         password = request.POST.get("password", "")
         if not name or not login or not password:
             error = "Заполните все поля."
-        elif not add_author(name, login, hash_password(password)):
+        elif User.objects.filter(login=login).exists():
             error = "Такой логин уже используется."
         else:
-            return redirect("authors_web:authors")
+            try:
+                User.objects.create(
+                    name=name,
+                    login=login,
+                    password_hash=hash_password(password),
+                    role=User.Role.AUTHOR,
+                )
+            except IntegrityError:
+                error = "Не удалось создать автора."
+            else:
+                return redirect("authors_web:authors")
 
     return render(
         request,
         "authors_web/author_list.html",
-        {"authors": get_authors(), "error": error},
+        {
+            "authors": User.objects.filter(
+                role=User.Role.AUTHOR
+            ).order_by("name"),
+            "error": error,
+        },
     )

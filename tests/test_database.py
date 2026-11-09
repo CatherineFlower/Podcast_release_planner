@@ -1,6 +1,7 @@
 """Проверки слоя SQLite ПР7."""
 
 import json
+from pathlib import Path
 
 from db.database import BASE_DIR, get_connection
 

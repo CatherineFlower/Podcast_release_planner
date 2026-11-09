@@ -1,9 +1,10 @@
-"""Темы из SQLite."""
+"""Темы выпусков через Django ORM."""
 
 from django.shortcuts import redirect, render
 
-from db.repository import add_topic, get_topics
 from homepage.auth import admin_required
+
+from .models import Topic
 
 
 @admin_required
@@ -13,13 +14,14 @@ def topics(request):
         name = request.POST.get("name", "").strip()
         if not name:
             error = "Название темы не должно быть пустым."
-        elif not add_topic(name):
+        elif Topic.objects.filter(name__iexact=name).exists():
             error = "Такая тема уже существует."
         else:
+            Topic.objects.create(name=name)
             return redirect("topics_web:topics")
 
     return render(
         request,
         "topics_web/topic_list.html",
-        {"topics": get_topics(), "error": error},
+        {"topics": Topic.objects.all(), "error": error},
     )

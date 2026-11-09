@@ -1,15 +1,12 @@
-"""Подкасты: данные получают Django views напрямую из SQLite."""
+"""Подкасты: получение и изменение данных средствами Django ORM."""
 
-from django.shortcuts import redirect, render
+from django.db.models import Count
+from django.shortcuts import get_object_or_404, redirect, render
 
-from db.repository import (
-    add_podcast,
-    get_authors,
-    get_podcast,
-    get_podcast_episodes,
-    get_podcasts,
-)
+from authors_web.models import User
 from homepage.auth import forbidden_response, login_required
+
+from .models import Podcast
 
 
 @login_required
@@ -17,7 +14,7 @@ def podcasts(request):
     user = request.current_user
 
     if request.method == "POST":
-        if user["role"] != "admin":
+        if user.role != User.Role.ADMIN:
             return forbidden_response(request)
         title = request.POST.get("title", "").strip()
         description = request.POST.get("description", "").strip()
@@ -25,17 +22,34 @@ def podcasts(request):
             author_id = int(request.POST.get("author_id", "0"))
         except ValueError:
             author_id = 0
-        if title and description and author_id:
-            add_podcast(title, description, author_id)
+        author = User.objects.filter(
+            pk=author_id,
+            role=User.Role.AUTHOR,
+        ).first()
+        if title and description and author is not None:
+            Podcast.objects.create(
+                title=title,
+                description=description,
+                author=author,
+            )
         return redirect("podcasts_web:podcasts")
 
-    author_id = user["id"] if user["role"] == "author" else None
+    queryset = (
+        Podcast.objects.select_related("author")
+        .annotate(episode_count=Count("episodes"))
+        .order_by("title", "pk")
+    )
+    if user.role == User.Role.AUTHOR:
+        queryset = queryset.filter(author=user)
+
     return render(
         request,
         "podcasts_web/podcast_list.html",
         {
-            "podcasts": get_podcasts(author_id),
-            "authors": get_authors(),
+            "podcasts": queryset,
+            "authors": User.objects.filter(
+                role=User.Role.AUTHOR
+            ).order_by("name"),
         },
     )
 
@@ -43,25 +57,23 @@ def podcasts(request):
 @login_required
 def podcast_detail(request, podcast_id):
     user = request.current_user
-    podcast = get_podcast(podcast_id)
-    if (
-        podcast is not None
-        and user["role"] == "author"
-        and podcast["author_id"] != user["id"]
-    ):
+    queryset = Podcast.objects.select_related("author").annotate(
+        episode_count=Count("episodes")
+    )
+    podcast = get_object_or_404(queryset, pk=podcast_id)
+
+    if user.role == User.Role.AUTHOR and podcast.author_id != user.pk:
         return forbidden_response(request)
 
-    context = {
-        "podcast": podcast,
-        "podcast_episodes": (
-            get_podcast_episodes(podcast_id)
-            if podcast is not None
-            else []
-        ),
-    }
+    podcast_episodes = (
+        podcast.episodes.select_related("topic", "author")
+        .order_by("release_date", "pk")
+    )
     return render(
         request,
         "podcasts_web/podcast_detail.html",
-        context,
-        status=404 if podcast is None else 200,
+        {
+            "podcast": podcast,
+            "podcast_episodes": podcast_episodes,
+        },
     )
